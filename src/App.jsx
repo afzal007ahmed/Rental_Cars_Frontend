@@ -1,9 +1,14 @@
-import { Button } from "@/components/ui/button"
+import { BrowserRouter } from "react-router";
+import AppRouter from "./routes/AppRouter";
+import { Toaster } from "sonner";
 
 function App() {
   return (
-    <div></div>
-  )
+    <BrowserRouter>
+      <Toaster />
+      <AppRouter />
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
