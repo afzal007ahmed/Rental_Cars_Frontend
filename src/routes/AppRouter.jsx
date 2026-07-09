@@ -11,11 +11,16 @@ import SearchResult from "@/pages/SearchResult";
 import LocationPage from "@/pages/LocationPage";
 import Checkout from "@/pages/Checkout";
 import GuestCheck from "@/guestcheck/GuestCheck";
+import Register from "@/pages/Register";
+import { api } from "@/api/api";
+import Confirm from "@/pages/Confirm";
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route path={routes.Login} element={<Login />} />
+      <Route path={routes.Register} element={<Register />} />
+
       <Route
         element={
           <AppContextWrapper>
@@ -34,6 +39,7 @@ const AppRouter = () => {
           path={routes.Checkout + "/:locationId/:vehicleId"}
           element={<Checkout />}
         />
+        <Route path={routes.Confirm + '/:id'} element={<Confirm/>} />
       </Route>
     </Routes>
   );

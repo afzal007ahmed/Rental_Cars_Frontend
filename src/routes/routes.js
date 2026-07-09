@@ -5,5 +5,7 @@ export const Routes = {
     Bookings : '/bookings',
     SearchResult : '/available',
     Store : '/store/:id',
-    Checkout : '/checkout'
+    Checkout : '/checkout',
+    Register : '/register',
+    Confirm : '/confirm'
 }

@@ -27,12 +27,14 @@ export default function Login() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, type) => {
     e.preventDefault();
     try {
       setLoading(true);
       const data = await axios.post(
-        import.meta.env.VITE_BASE_URL + api.Login,
+        type === "guest"
+          ? import.meta.env.VITE_BASE_URL + api.GuestLogin
+          : import.meta.env.VITE_BASE_URL + api.Login,
         userDetails,
       );
       const { token } = data.data;
@@ -52,7 +54,7 @@ export default function Login() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={(e) => handleSubmit(e, "user")} className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
 
@@ -81,6 +83,9 @@ export default function Login() {
 
             <Button type="submit" className="w-full">
               {!loading ? "Login" : <Loader2 className="animate-spin" />}
+            </Button>
+            <Button className="w-full" onClick={(e) => handleSubmit(e, "guest")}>
+              Continue As Guest
             </Button>
           </form>
         </CardContent>

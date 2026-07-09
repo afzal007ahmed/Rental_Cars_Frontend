@@ -24,10 +24,12 @@ import {
 } from "lucide-react";
 
 import React, { useContext, useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { AppContext } from "@/contexts/AppContextWrapper";
+import { Routes } from "@/routes/routes";
 
 const Checkout = () => {
+  const navigator = useNavigate() ;
   const { state } = useContext(AppContext);
   const user = state?.data?.user;
   const name = user?.name ?? "";
@@ -37,15 +39,35 @@ const Checkout = () => {
 
   const startDate = new Date(searchParams.get("start_date"));
   const toDate = new Date(searchParams.get("to_date"));
-  const isGuest = state?.guest ?? false;
+  const isGuest = user?.guest ?? false;
 
   const [loading, setLoading] = useState(false);
+  const [bookingLoader, setBookingLoader] = useState(false);
   const [checkoutDetails, setCheckoutDetails] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
   const [guestDetails, setGuestDetails] = useState({
     name: "",
     email: "",
   });
+
+  const disabled = isGuest && (!guestDetails.email || !guestDetails.name);
+  async function confirmBooking() {
+    try {
+      const body = {
+        locationId: locationId,
+        vehicleId: vehicleId,
+        startDate: startDate,
+        toDate: toDate,
+        guestName: guestDetails.name,
+        guestEmail: guestDetails.email,
+      };
+      setBookingLoader(true);
+      const response = await apiRequest.post(api.Bookings, body);
+      navigator(Routes.Confirm + `/${response.id}`);
+    } finally {
+      setBookingLoader(false);
+    }
+  }
 
   async function fetchCheckoutDetails() {
     try {
@@ -81,18 +103,17 @@ const Checkout = () => {
     );
   }
 
-
   const vehicle = checkoutDetails?.vehicle;
   const pickup = checkoutDetails?.pickup;
   const images = vehicle?.images ?? [];
-
-
 
   if (!checkoutDetails || !vehicle) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Card className="p-8">
-          <p className="text-lg font-semibold">Unable to load checkout details.</p>
+          <p className="text-lg font-semibold">
+            Unable to load checkout details.
+          </p>
         </Card>
       </div>
     );
@@ -139,7 +160,9 @@ const Checkout = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <h2 className="text-3xl font-bold">{vehicle?.name}</h2>
-                  <p className="mt-1 text-lg text-slate-500">{vehicle?.brand}</p>
+                  <p className="mt-1 text-lg text-slate-500">
+                    {vehicle?.brand}
+                  </p>
                 </div>
 
                 <Badge className="bg-green-600 px-3 py-1 text-white">
@@ -268,7 +291,7 @@ const Checkout = () => {
                   <p className="font-semibold">{pickup?.name ?? "-"}</p>
 
                   <p className="text-sm text-slate-500">
-                    {[pickup?.city,pickup?.state].filter(Boolean).join(", ")}
+                    {[pickup?.city, pickup?.state].filter(Boolean).join(", ")}
                   </p>
                 </div>
               </div>
@@ -304,7 +327,9 @@ const Checkout = () => {
                   <div className="flex justify-between">
                     <span className="text-slate-600">Price / Day</span>
 
-                    <span className="font-semibold">₹{vehicle?.price ?? 0}</span>
+                    <span className="font-semibold">
+                      ₹{vehicle?.price ?? 0}
+                    </span>
                   </div>
 
                   <Separator />
@@ -317,7 +342,11 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <Button className="h-12 w-full rounded-xl bg-blue-600 text-lg hover:bg-blue-700">
+              <Button
+                className="h-12 w-full rounded-xl bg-blue-600 text-lg hover:bg-blue-700"
+                disabled={disabled}
+                onClick={confirmBooking}
+              >
                 Confirm Booking
               </Button>
             </CardContent>
