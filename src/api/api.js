@@ -5,5 +5,6 @@ export const api ={
     Locations : 'locations/',
     Checkout : 'checkout/',
     GuestLogin : 'auth/guest/login',
-    Bookings : '/bookings'
+    Bookings : '/bookings',
+    Register : 'auth/register'
 }

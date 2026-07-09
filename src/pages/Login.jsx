@@ -9,6 +9,7 @@ import { api } from "@/api/api";
 import { useNavigate } from "react-router";
 import { Routes } from "@/routes/routes";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Login() {
   const nav = useNavigate();
@@ -41,7 +42,11 @@ export default function Login() {
       localStorage.setItem("token", token);
       setLoading(false);
       nav(Routes.Home);
-    } finally {
+    }
+    catch(err){
+      toast.error(err.response.data.message.join('\n') || err.message , { position : "bottom-center"})
+    } 
+    finally {
       setLoading(false);
     }
   };
@@ -84,10 +89,22 @@ export default function Login() {
             <Button type="submit" className="w-full">
               {!loading ? "Login" : <Loader2 className="animate-spin" />}
             </Button>
-            <Button className="w-full" onClick={(e) => handleSubmit(e, "guest")}>
+            <Button
+              className="w-full"
+              onClick={(e) => handleSubmit(e, "guest")}
+            >
               Continue As Guest
             </Button>
           </form>
+          <p className="text-sm mt-2">
+            Don't have a account ?{" "}
+            <span
+              className="font-bold text-blue-600 cursor-pointer"
+              onClick={() => nav(Routes.Register)}
+            >
+              Register
+            </span>
+          </p>
         </CardContent>
       </Card>
     </div>

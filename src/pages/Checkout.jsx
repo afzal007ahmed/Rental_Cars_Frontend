@@ -58,8 +58,8 @@ const Checkout = () => {
         vehicleId: vehicleId,
         startDate: startDate,
         toDate: toDate,
-        guestName: guestDetails.name,
-        guestEmail: guestDetails.email,
+        guestName: guestDetails.name || null,
+        guestEmail: guestDetails.email || null ,
       };
       setBookingLoader(true);
       const response = await apiRequest.post(api.Bookings, body);

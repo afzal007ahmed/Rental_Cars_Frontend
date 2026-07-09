@@ -8,6 +8,7 @@ import { api } from "@/api/api";
 import { useNavigate } from "react-router";
 import { Routes } from "@/routes/routes";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -67,8 +68,10 @@ const Register = () => {
       localStorage.setItem("token", token);
 
       navigate(Routes.Home);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      toast.error(err.response.data.message.join("\n") || err.message, {
+        position: "bottom-center",
+      });
     } finally {
       setLoading({ guestLogin: false, register: false });
     }
@@ -139,8 +142,21 @@ const Register = () => {
             onClick={handleRegister}
             disabled={loading.register}
           >
-            {loading.register ? <Loader2 className="animate-spin" /> : "Register"}
+            {loading.register ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Register"
+            )}
           </Button>
+          <p className="text-sm">
+            Already have a account ?{" "}
+            <span
+              className="font-bold text-blue-600 cursor-pointer"
+              onClick={() => navigate(Routes.Login)}
+            >
+              Login
+            </span>
+          </p>
         </CardContent>
       </Card>
     </div>

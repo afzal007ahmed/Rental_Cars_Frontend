@@ -12,6 +12,7 @@ import { useContext, useState } from "react";
 import { AppContext } from "@/contexts/AppContextWrapper";
 import { useNavigate } from "react-router";
 import { Routes } from "@/routes/routes";
+import { Button } from "../ui/button";
 
 const items = [
   {
@@ -30,7 +31,7 @@ export function AppSidebar() {
   const nav = useNavigate();
   const { state } = useContext(AppContext);
   const { user } = state.data;
-  const isGuest = user.guest ;
+  const isGuest = user.guest;
   return (
     <Sidebar className="border-r">
       <div className="flex h-full flex-col">
@@ -51,7 +52,8 @@ export function AppSidebar() {
           <SidebarMenu className="space-y-3">
             {items.map(
               (item) =>
-                ((item.url === Routes.Bookings && !isGuest ) || item.url !== Routes.Bookings) && (
+                ((item.url === Routes.Bookings && !isGuest) ||
+                  item.url !== Routes.Bookings) && (
                   <SidebarMenuItem
                     key={item.title}
                     onClick={() => nav(item.url)}
@@ -71,6 +73,28 @@ export function AppSidebar() {
         </SidebarContent>
 
         <SidebarFooter className="border-t p-4">
+          {!isGuest && (
+            <Button
+              className="bg-red-600 text-white font-bold"
+              onClick={() => {
+                localStorage.removeItem("token");
+                nav(Routes.Login);
+              }}
+            >
+              Log out
+            </Button>
+          )}
+          {isGuest && (
+            <Button
+              className="bg-gray-600 text-white font-bold"
+              onClick={() => {
+                localStorage.removeItem("token");
+                nav(Routes.Register);
+              }}
+            >
+              Log in
+            </Button>
+          )}
           <div className="flex items-center gap-3 rounded-xl bg-muted p-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold">
               A
