@@ -21,6 +21,8 @@ import { toast } from "sonner";
 import axios from "axios";
 import { api } from "@/api/api";
 import { debounce } from "@/utils/debounce";
+import { useNavigate } from "react-router";
+import { Routes } from "@/routes/routes";
 
 export default function SearchPage() {
   const [from, setFrom] = useState("");
@@ -29,13 +31,16 @@ export default function SearchPage() {
     long: null,
     lat: null,
   });
+  const nav = useNavigate();
   const foundLocation = useRef(false);
   const [to, setTo] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState(null);
 
-  const disabled = !foundLocation.current || to === null || from === null;
+  const currDate = new Date();
+
+  const disabled = !foundLocation.current || !to || !from;
 
   async function fetchLocations() {
     setLoading(true);
@@ -47,13 +52,13 @@ export default function SearchPage() {
   const debounceFn = useCallback(debounce(1), []);
 
   useEffect(() => {
-    if (search.trim().length) {
+    if (search.trim().length && !foundLocation.current) {
       debounceFn(fetchLocations);
     }
   }, [search]);
 
   useEffect(() => {
-    if (search.trim().length > 0) {
+    if (search.trim().length > 0 && !foundLocation.current) {
       setOpen(true);
     }
   }, [search]);
@@ -75,7 +80,10 @@ export default function SearchPage() {
           <Input
             placeholder="Enter city"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              foundLocation.current = false;
+            }}
             className="h-12"
           />
 
@@ -138,7 +146,7 @@ export default function SearchPage() {
                   mode="single"
                   selected={from}
                   onSelect={(date) => {
-                    if (to && date >= to) {
+                    if ((to && date >= to) || currDate > date) {
                       toast.error("please select a valid date range.", {
                         position: "bottom-center",
                       });
@@ -174,7 +182,7 @@ export default function SearchPage() {
                   mode="single"
                   selected={to}
                   onSelect={(date) => {
-                    if (from && date <= from) {
+                    if ((from && date <= from) || currDate > date) {
                       toast.error("please select a valid date range.", {
                         position: "bottom-center",
                       });
@@ -193,6 +201,18 @@ export default function SearchPage() {
           <Button
             size="lg"
             disabled={disabled}
+            onClick={() => {
+              const params = new URLSearchParams({
+                start_date: from.toISOString().split("T")[0],
+                to_date: to.toISOString().split("T")[0],
+              });
+
+              nav(
+                Routes.SearchResult +
+                  "?" +
+                  `long=${coords.current.long}&lat=${coords.current.lat}&name=${search}&${params.toString()}`,
+              );
+            }}
             className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-10 py-6 text-base shadow-lg transition hover:scale-105 hover:from-blue-700 hover:to-indigo-700"
           >
             <Search className="mr-2 h-5 w-5" />

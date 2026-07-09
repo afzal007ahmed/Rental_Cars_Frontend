@@ -27,7 +27,7 @@ export default function Home() {
           </h1>
 
           <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
-            Discover cars and bikes at the best prices. Search, book, and
+            Discover cars at the best prices. Search, book, and
             travel with confidence—your next adventure starts here.
           </p>
 

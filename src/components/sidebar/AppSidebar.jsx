@@ -11,6 +11,7 @@ import {
 import { useContext, useState } from "react";
 import { AppContext } from "@/contexts/AppContextWrapper";
 import { useNavigate } from "react-router";
+import { Routes } from "@/routes/routes";
 
 const items = [
   {
@@ -26,9 +27,10 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const nav = useNavigate() ;
+  const nav = useNavigate();
   const { state } = useContext(AppContext);
   const { user } = state.data;
+  const isGuest = user.guest ;
   return (
     <Sidebar className="border-r">
       <div className="flex h-full flex-col">
@@ -47,14 +49,24 @@ export function AppSidebar() {
 
         <SidebarContent className="flex-1 px-4 py-6">
           <SidebarMenu className="space-y-3">
-            {items.map((item) => (
-              <SidebarMenuItem key={item.title} onClick={() => nav(item.url)}>
-                <div className={`flex  items-center gap-4 hover:bg-gray-200 hover:text-black p-2 rounded-md cursor-pointer ${ window.location.pathname === item.url && "bg-black text-white transition-all"}`}>
-                  <item.icon className="h-5 w-5" />
-                  <span className="text-base font-medium">{item.title}</span>
-                </div>
-              </SidebarMenuItem>
-            ))}
+            {items.map(
+              (item) =>
+                ((item.url === Routes.Bookings && !isGuest ) || item.url !== Routes.Bookings) && (
+                  <SidebarMenuItem
+                    key={item.title}
+                    onClick={() => nav(item.url)}
+                  >
+                    <div
+                      className={`flex  items-center gap-4 hover:bg-gray-200 hover:text-black p-2 rounded-md cursor-pointer ${window.location.pathname === item.url && "bg-black text-white transition-all"}`}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span className="text-base font-medium">
+                        {item.title}
+                      </span>
+                    </div>
+                  </SidebarMenuItem>
+                ),
+            )}
           </SidebarMenu>
         </SidebarContent>
 

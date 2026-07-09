@@ -7,6 +7,10 @@ import Home from "@/pages/Home";
 import AppContextWrapper from "@/contexts/AppContextWrapper";
 import Bookings from "@/pages/Bookings";
 import SearchPage from "@/pages/SearchPage";
+import SearchResult from "@/pages/SearchResult";
+import LocationPage from "@/pages/LocationPage";
+import Checkout from "@/pages/Checkout";
+import GuestCheck from "@/guestcheck/GuestCheck";
 
 const AppRouter = () => {
   return (
@@ -19,9 +23,17 @@ const AppRouter = () => {
           </AppContextWrapper>
         }
       >
-        <Route path={routes.Home} element={<Home/>} />
+        <Route path={routes.Home} element={<Home />} />
         <Route path={routes.Search} element={<SearchPage />} />
-        <Route path={routes.Bookings} element={<Bookings />} />
+        <Route element={<GuestCheck />}>
+          <Route path={routes.Bookings} element={<Bookings />} />
+        </Route>
+        <Route path={routes.SearchResult} element={<SearchResult />} />
+        <Route path={routes.Store} element={<LocationPage />} />
+        <Route
+          path={routes.Checkout + "/:locationId/:vehicleId"}
+          element={<Checkout />}
+        />
       </Route>
     </Routes>
   );

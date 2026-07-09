@@ -3,7 +3,7 @@ import { apiRequest } from "@/api/interceptor";
 import { api } from "@/api/api";
 import { AppContext } from "@/contexts/AppContextWrapper";
 import { Loader2 } from "lucide-react";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 
@@ -20,6 +20,7 @@ const ProtectedRoutes = () => {
   useEffect(() => {
     fetchMe();
   }, []);
+ 
 
   return (
     <div className="relative">
