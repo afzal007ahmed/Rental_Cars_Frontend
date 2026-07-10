@@ -10,11 +10,16 @@ import { useNavigate } from "react-router";
 import { Routes } from "@/routes/routes";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { loginSchema } from "@/zod/schemas";
 
 export default function Login() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({
     email: "",
     password: "",
   });
@@ -26,10 +31,31 @@ export default function Login() {
       ...prev,
       [name]: value,
     }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
   const handleSubmit = async (e, type) => {
     e.preventDefault();
+
+    if (type === "user") {
+      const result = loginSchema.safeParse(userDetails);
+      if (!result.success) {
+        const newErrors = { email: "", password: "" };
+        result.error.issues.forEach((issue) => {
+          const path = issue.path[0];
+          if (path) {
+            newErrors[path] = issue.message;
+          }
+        });
+        setErrors(newErrors);
+        return;
+      }
+    }
+
     try {
       setLoading(true);
       const data = await axios.post(
@@ -70,7 +96,11 @@ export default function Login() {
                 placeholder="Enter your email"
                 value={userDetails.email}
                 onChange={handleChange}
+                className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
+              {errors.email && (
+                <p className="text-sm font-medium text-red-500">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -83,7 +113,11 @@ export default function Login() {
                 placeholder="Enter your password"
                 value={userDetails.password}
                 onChange={handleChange}
+                className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
+              {errors.password && (
+                <p className="text-sm font-medium text-red-500">{errors.password}</p>
+              )}
             </div>
 
             <Button type="submit" className="w-full">

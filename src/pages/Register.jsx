@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import { Routes } from "@/routes/routes";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { registerSchema } from "@/zod/schemas";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -23,12 +24,23 @@ const Register = () => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setUserDetails((prev) => ({
       ...prev,
       [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   };
 
@@ -53,6 +65,19 @@ const Register = () => {
   };
 
   const handleRegister = async () => {
+    const result = registerSchema.safeParse(userDetails);
+    if (!result.success) {
+      const newErrors = { name: "", email: "", password: "" };
+      result.error.issues.forEach((issue) => {
+        const path = issue.path[0];
+        if (path) {
+          newErrors[path] = issue.message;
+        }
+      });
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       setLoading({ guestLogin: false, register: true });
       const response = await axios.post(
@@ -93,7 +118,11 @@ const Register = () => {
               placeholder="Enter your name"
               value={userDetails.name}
               onChange={handleChange}
+              className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
             />
+            {errors.name && (
+              <p className="text-sm font-medium text-red-500">{errors.name}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -105,7 +134,11 @@ const Register = () => {
               placeholder="Enter your email"
               value={userDetails.email}
               onChange={handleChange}
+              className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
             />
+            {errors.email && (
+              <p className="text-sm font-medium text-red-500">{errors.email}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -117,11 +150,16 @@ const Register = () => {
               placeholder="Create a strong password"
               value={userDetails.password}
               onChange={handleChange}
+              className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
             />
 
-            <p className="text-xs text-muted-foreground">
-              Minimum 8 characters with uppercase, lowercase, number and symbol.
-            </p>
+            {errors.password ? (
+              <p className="text-sm font-medium text-red-500">{errors.password}</p>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Minimum 8 characters with uppercase, lowercase, number and symbol.
+              </p>
+            )}
           </div>
 
           <Button

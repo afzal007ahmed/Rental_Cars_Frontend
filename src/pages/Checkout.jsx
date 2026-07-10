@@ -27,6 +27,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import { AppContext } from "@/contexts/AppContextWrapper";
 import { Routes } from "@/routes/routes";
+import { guestCheckoutSchema } from "@/zod/schemas";
 
 const Checkout = () => {
   const navigator = useNavigate() ;
@@ -49,9 +50,28 @@ const Checkout = () => {
     name: "",
     email: "",
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+  });
 
   const disabled = isGuest && (!guestDetails.email || !guestDetails.name);
   async function confirmBooking() {
+    if (isGuest) {
+      const result = guestCheckoutSchema.safeParse(guestDetails);
+      if (!result.success) {
+        const newErrors = { name: "", email: "" };
+        result.error.issues.forEach((issue) => {
+          const path = issue.path[0];
+          if (path) {
+            newErrors[path] = issue.message;
+          }
+        });
+        setErrors(newErrors);
+        return;
+      }
+    }
+
     try {
       const body = {
         locationId: locationId,
@@ -216,16 +236,23 @@ const Checkout = () => {
                   {!isGuest ? (
                     <p className="font-semibold">{name}</p>
                   ) : (
-                    <Input
-                      placeholder="Enter your name"
-                      value={guestDetails.name}
-                      onChange={(e) =>
-                        setGuestDetails((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                    />
+                    <div className="space-y-1 w-full">
+                      <Input
+                        placeholder="Enter your name"
+                        value={guestDetails.name}
+                        onChange={(e) => {
+                          setGuestDetails((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }));
+                          setErrors((prev) => ({ ...prev, name: "" }));
+                        }}
+                        className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
+                      />
+                      {errors.name && (
+                        <p className="text-sm font-medium text-red-500">{errors.name}</p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -240,17 +267,24 @@ const Checkout = () => {
                   {!isGuest ? (
                     <p className="font-semibold">{email}</p>
                   ) : (
-                    <Input
-                      placeholder="Enter your email"
-                      type="email"
-                      value={guestDetails.email}
-                      onChange={(e) =>
-                        setGuestDetails((prev) => ({
-                          ...prev,
-                          email: e.target.value,
-                        }))
-                      }
-                    />
+                    <div className="space-y-1 w-full">
+                      <Input
+                        placeholder="Enter your email"
+                        type="email"
+                        value={guestDetails.email}
+                        onChange={(e) => {
+                          setGuestDetails((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }));
+                          setErrors((prev) => ({ ...prev, email: "" }));
+                        }}
+                        className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                      />
+                      {errors.email && (
+                        <p className="text-sm font-medium text-red-500">{errors.email}</p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
