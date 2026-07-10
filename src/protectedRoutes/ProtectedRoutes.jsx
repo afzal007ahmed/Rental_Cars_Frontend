@@ -12,9 +12,13 @@ const ProtectedRoutes = () => {
 
   async function fetchMe() {
     dispatch({ type: "LOADING" });
-    const user = await apiRequest.get(api.Me);
-    console.log(user);
-    dispatch({ type: "FETCH_USER_DETAILS", payload: user });
+    try {
+      const user = await apiRequest.get(api.Me);
+      console.log(user);
+      dispatch({ type: "FETCH_USER_DETAILS", payload: user });
+    } catch (error) {
+      dispatch({ type: "FETCH_USER_DETAILS", payload: null });
+    }
   }
 
   useEffect(() => {
