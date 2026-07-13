@@ -92,7 +92,7 @@ export function AppSidebar() {
                 nav(Routes.Register);
               }}
             >
-              Log in
+              Register
             </Button>
           )}
           <div className="flex items-center gap-3 rounded-xl bg-muted p-3">

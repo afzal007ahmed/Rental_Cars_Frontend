@@ -15,8 +15,8 @@ const SearchResult = () => {
   const lat = parseFloat(searchParams.get("lat") || "");
   const long = parseFloat(searchParams.get("long") || "");
 
-  const to = new Date(searchParams.get("to_date"));
-  const from = new Date(searchParams.get("start_date"));
+  const to = searchParams.get("to_date") ;
+  const from = searchParams.get("start_date")
 
   const [loading, setLoading] = useState(false);
   const [warehouses, setWarehouses] = useState([]);
@@ -104,8 +104,8 @@ const SearchResult = () => {
                       className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-700 hover:to-violet-700"
                       onClick={() => {
                         const params = new URLSearchParams({
-                          start_date: from.toISOString().split("T")[0],
-                          to_date: to.toISOString().split("T")[0],
+                          start_date: from,
+                          to_date: to,
                         });
 
                         navigate(`${Routes.Store.slice(0,Routes.Store.length - 3)}/${warehouse.id}?${params.toString()}`);

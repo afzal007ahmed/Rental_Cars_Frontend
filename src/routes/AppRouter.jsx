@@ -14,6 +14,7 @@ import GuestCheck from "@/guestcheck/GuestCheck";
 import Register from "@/pages/Register";
 import { api } from "@/api/api";
 import Confirm from "@/pages/Confirm";
+import BookingUpdate from "@/pages/BookingUpdate";
 
 const AppRouter = () => {
   return (
@@ -39,7 +40,11 @@ const AppRouter = () => {
           path={routes.Checkout + "/:locationId/:vehicleId"}
           element={<Checkout />}
         />
-        <Route path={routes.Confirm + '/:id'} element={<Confirm/>} />
+        <Route path={routes.Confirm + "/:id"} element={<Confirm />} />
+        <Route
+          path={routes.UpdateBooking + "/:id"}
+          element={<BookingUpdate />}
+        />
       </Route>
     </Routes>
   );

@@ -10,12 +10,10 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
+import { Routes } from "@/routes/routes";
 
 const statusColor = {
   inprogress: "bg-blue-500",
@@ -24,15 +22,35 @@ const statusColor = {
 };
 
 const Bookings = () => {
+  const nav = useNavigate();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
+  const [cancelLoader, setCancelLoader] = useState({
+    status: false,
+    id: null,
+  });
+
+  async function cancelBooking(id) {
+    try {
+      setCancelLoader({
+        status: true,
+        id: id,
+      });
+      await apiRequest.delete(api.Bookings + `/${id}`);
+      getAllBookings();
+      toast.success(`Booking ${id} cancelled successfully`);
+    } finally {
+      setCancelLoader({
+        status: false,
+        id: null,
+      });
+    }
+  }
 
   async function getAllBookings() {
     try {
       setLoading(true);
-
-      const response = await apiRequest.get(api.Bookings + "/user");
-
+      const response = await apiRequest.get(api.Bookings + "/all");
       setBookings(response);
     } finally {
       setLoading(false);
@@ -54,7 +72,6 @@ const Bookings = () => {
   return (
     <div className="min-h-screen bg-slate-100 py-10">
       <div className="mx-auto max-w-6xl px-4">
-
         <div className="mb-8">
           <h1 className="text-4xl font-bold">My Bookings</h1>
           <p className="text-muted-foreground mt-2">
@@ -65,9 +82,7 @@ const Bookings = () => {
         {bookings.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <h2 className="text-xl font-semibold">
-                No bookings found
-              </h2>
+              <h2 className="text-xl font-semibold">No bookings found</h2>
 
               <p className="mt-2 text-muted-foreground">
                 You haven't booked any vehicles yet.
@@ -76,48 +91,58 @@ const Bookings = () => {
           </Card>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-
             {bookings.map((booking) => (
               <Card
+                onClick={() => nav(Routes.UpdateBooking + `/${booking.id}`)}
                 key={booking.id}
                 className="transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
               >
                 <CardHeader>
-
                   <div className="flex items-center justify-between">
-
                     <CardTitle className="text-lg">
                       {booking.location.name}
                     </CardTitle>
-
-                    <Badge
-                      className={`${statusColor[booking.status]} capitalize`}
-                    >
-                      {booking.status}
-                    </Badge>
-
+                    <div className="flex gap-2">
+                      <Badge
+                        className={`${statusColor[booking.status]} capitalize`}
+                      >
+                        {booking.status}
+                      </Badge>
+                      {booking.status !== "cancelled" && (
+                        <Badge
+                          className="bg-red-600 text-white font-bold cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            cancelBooking(booking.id);
+                          }}
+                        >
+                          {cancelLoader.status &&
+                          cancelLoader.id === booking.id ? (
+                            <Loader2 className="animate-spin" />
+                          ) : (
+                            "Cancel"
+                          )}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
 
                   <p className="text-sm text-muted-foreground">
                     {booking.location.city}, {booking.location.state}
                   </p>
-
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-
                   <div className="flex items-center gap-3">
                     <CalendarDays className="h-5 w-5 text-primary" />
 
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        Pickup
-                      </p>
+                      <p className="text-sm text-muted-foreground">Pickup</p>
 
                       <p className="font-medium">
-                        {new Date(
-                          booking.start_date
-                        ).toLocaleDateString("en-IN")}
+                        {new Date(booking.start_date).toLocaleDateString(
+                          "en-IN",
+                        )}
                       </p>
                     </div>
                   </div>
@@ -126,14 +151,10 @@ const Bookings = () => {
                     <CalendarDays className="h-5 w-5 text-primary" />
 
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        Return
-                      </p>
+                      <p className="text-sm text-muted-foreground">Return</p>
 
                       <p className="font-medium">
-                        {new Date(
-                          booking.to_date
-                        ).toLocaleDateString("en-IN")}
+                        {new Date(booking.to_date).toLocaleDateString("en-IN")}
                       </p>
                     </div>
                   </div>
@@ -160,9 +181,7 @@ const Bookings = () => {
                         Pickup Hub
                       </p>
 
-                      <p className="font-medium">
-                        {booking.location.name}
-                      </p>
+                      <p className="font-medium">{booking.location.name}</p>
                     </div>
                   </div>
 
@@ -179,11 +198,9 @@ const Bookings = () => {
                       </p>
                     </div>
                   </div>
-
                 </CardContent>
               </Card>
             ))}
-
           </div>
         )}
       </div>

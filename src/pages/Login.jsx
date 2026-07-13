@@ -70,7 +70,7 @@ export default function Login() {
       nav(Routes.Home);
     }
     catch(err){
-      toast.error(err.response.data.message.join('\n') || err.message , { position : "bottom-center"})
+      toast.error(err.response.data.message || err.message , { position : "bottom-center"})
     } 
     finally {
       setLoading(false);

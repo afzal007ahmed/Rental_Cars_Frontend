@@ -23,7 +23,7 @@ import { api } from "@/api/api";
 import { debounce } from "@/utils/debounce";
 import { useNavigate } from "react-router";
 import { Routes } from "@/routes/routes";
-
+import { formatDate } from "@/utils/dateFormater";
 export default function SearchPage() {
   const [from, setFrom] = useState("");
   const [open, setOpen] = useState(false);
@@ -203,8 +203,8 @@ export default function SearchPage() {
             disabled={disabled}
             onClick={() => {
               const params = new URLSearchParams({
-                start_date: from.toISOString().split("T")[0],
-                to_date: to.toISOString().split("T")[0],
+                start_date: formatDate(from),
+                to_date: formatDate(to),
               });
 
               nav(
