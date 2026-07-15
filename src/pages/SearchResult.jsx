@@ -14,9 +14,12 @@ const SearchResult = () => {
 
   const lat = parseFloat(searchParams.get("lat") || "");
   const long = parseFloat(searchParams.get("long") || "");
+ const dropLocationId = searchParams.get('drop_location_id')
 
-  const to = searchParams.get("to_date") ;
-  const from = searchParams.get("start_date")
+  const to = searchParams.get("to_date");
+  const from = searchParams.get("start_date");
+  const fromTime = searchParams.get("from_time");
+  const toTime = searchParams.get("to_time");
 
   const [loading, setLoading] = useState(false);
   const [warehouses, setWarehouses] = useState([]);
@@ -26,7 +29,7 @@ const SearchResult = () => {
       setLoading(true);
 
       const data = await apiRequest.get(
-        `${api.Locations}?lat=${lat}&long=${long}`,
+        `${api.Locations}range?lat=${lat}&long=${long}`,
       );
 
       setWarehouses(data);
@@ -76,7 +79,11 @@ const SearchResult = () => {
               warehouses.map((warehouse) => (
                 <Card
                   key={warehouse.id}
-                  className="overflow-hidden rounded-2xl border-0 bg-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                  className={`overflow-hidden rounded-2xl border-0 bg-white shadow-lg transition-all duration-300 ${
+                    warehouse.active
+                      ? "hover:-translate-y-2 hover:shadow-2xl"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
                 >
                   <div className="h-2 bg-gradient-to-r from-blue-500 via-violet-500 to-pink-500" />
 
@@ -101,14 +108,20 @@ const SearchResult = () => {
                     </div>
 
                     <Button
+                      disabled={!warehouse.active}
                       className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-700 hover:to-violet-700"
                       onClick={() => {
                         const params = new URLSearchParams({
                           start_date: from,
                           to_date: to,
+                          from_time: fromTime,
+                          to_time: toTime,
+                          drop_location_id : dropLocationId
                         });
 
-                        navigate(`${Routes.Store.slice(0,Routes.Store.length - 3)}/${warehouse.id}?${params.toString()}`);
+                        navigate(
+                          `${Routes.Store.slice(0, Routes.Store.length - 3)}/${warehouse.id}?${params.toString()}`,
+                        );
                       }}
                     >
                       View Available Cars

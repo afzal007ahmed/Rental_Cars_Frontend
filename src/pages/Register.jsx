@@ -94,7 +94,7 @@ const Register = () => {
 
       navigate(Routes.Home);
     } catch (err) {
-      toast.error(err.response.data.message.join("\n") || err.message, {
+      toast.error(err.response?.data?.message|| err.message, {
         position: "bottom-center",
       });
     } finally {

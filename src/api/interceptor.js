@@ -16,7 +16,7 @@ apiRequest.interceptors.response.use(
   (error) => {
     let errorMessage = "An unexpected error occurred.";
     if (error.response) {
-      errorMessage = error.response.data.message || errorMessage;
+      errorMessage = error.response?.data?.message || error.message || errorMessage;
       console.log( errorMessage)
       if (error.response.status === 401) {
         localStorage.removeItem("token");
