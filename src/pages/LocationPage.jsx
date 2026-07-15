@@ -23,6 +23,9 @@ const LocationPage = () => {
 
   const startDate = searchParams.get("start_date");
   const toDate = searchParams.get("to_date");
+  const startTime = searchParams.get("from_time");
+  const endTime = searchParams.get("to_time");
+  const dropLocationId = searchParams.get('drop_location_id')
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -33,7 +36,7 @@ const LocationPage = () => {
       setLoading(true);
 
       const response = await apiRequest.get(
-        `${api.Locations}${locationId}?start_date=${startDate}&to_date=${toDate}`,
+        `${api.Locations}${locationId}?start_date=${startDate}&to_date=${toDate}&start_time=${startTime}&end_time=${endTime}`,
       );
 
       setData(response.data);
@@ -93,7 +96,7 @@ const LocationPage = () => {
             </div>
 
             <div className="rounded-2xl bg-white/10 px-6 py-4 backdrop-blur-md">
-              <p className="text-sm text-slate-300">Vehicles</p>
+              <p className="text-sm text-slate-300">Total Brands/Models</p>
 
               <p className="text-xl font-semibold text-white">{data.length}</p>
             </div>
@@ -246,6 +249,9 @@ const LocationPage = () => {
                         const params = new URLSearchParams({
                           start_date: startDate,
                           to_date: toDate,
+                          start_time: startTime,
+                          end_time: endTime,
+                          drop_location_id : dropLocationId
                         });
 
                         navigate(

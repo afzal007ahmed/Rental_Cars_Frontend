@@ -41,6 +41,9 @@ const Checkout = () => {
 
   const startDate = new Date(searchParams.get("start_date"));
   const toDate = new Date(searchParams.get("to_date"));
+  const startTime = searchParams.get("start_time");
+  const endTime = searchParams.get("end_time");
+  const dropLocationId = searchParams.get('drop_location_id') ;
   const isGuest = user?.guest ?? false;
 
   const [loading, setLoading] = useState(false);
@@ -81,6 +84,9 @@ const Checkout = () => {
         toDate: formatDate(toDate),
         guestName: guestDetails.name || null,
         guestEmail: guestDetails.email || null,
+        start_time : startTime,
+        end_time : endTime,
+        drop_location_id : dropLocationId
       };
       setBookingLoader(true);
       const response = await apiRequest.post(api.Bookings, body);
