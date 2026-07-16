@@ -327,8 +327,11 @@ export default function SearchPage() {
               }}
             />
           </div>
-          {search && differentDropLocation && dropLocations && dropLocations.length > 0 && selectForDifferentDropLocation}
-
+          {search &&
+            differentDropLocation &&
+            dropLocations &&
+            dropLocations.length > 0 &&
+            selectForDifferentDropLocation}
         </div>
 
         {/* Date & Time Section Starts Here */}
@@ -510,6 +513,9 @@ export default function SearchPage() {
                 to_date: formatDate(to),
                 from_time: fromTime,
                 to_time: toTime,
+                ...(selectedDropLocation && {
+                  drop_location_id: selectedDropLocation,
+                }),
               });
 
               nav(
@@ -517,7 +523,6 @@ export default function SearchPage() {
                   "?" +
                   `lat=${coords.current.lat}` +
                   `&long=${coords.current.long}` +
-                  `&drop_location_id=${selectedDropLocation}`+
                   `&name=${encodeURIComponent(search)}` +
                   `&${params.toString()}`,
               );

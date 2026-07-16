@@ -25,7 +25,7 @@ const LocationPage = () => {
   const toDate = searchParams.get("to_date");
   const startTime = searchParams.get("from_time");
   const endTime = searchParams.get("to_time");
-  const dropLocationId = searchParams.get('drop_location_id')
+  const dropLocationId = searchParams.get("drop_location_id");
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -251,7 +251,9 @@ const LocationPage = () => {
                           to_date: toDate,
                           start_time: startTime,
                           end_time: endTime,
-                          drop_location_id : dropLocationId
+                          ...(dropLocationId && {
+                            drop_location_id: dropLocationId,
+                          }),
                         });
 
                         navigate(

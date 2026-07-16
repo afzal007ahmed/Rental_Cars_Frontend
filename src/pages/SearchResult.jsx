@@ -14,7 +14,7 @@ const SearchResult = () => {
 
   const lat = parseFloat(searchParams.get("lat") || "");
   const long = parseFloat(searchParams.get("long") || "");
- const dropLocationId = searchParams.get('drop_location_id')
+  const dropLocationId = searchParams.get("drop_location_id");
 
   const to = searchParams.get("to_date");
   const from = searchParams.get("start_date");
@@ -116,7 +116,9 @@ const SearchResult = () => {
                           to_date: to,
                           from_time: fromTime,
                           to_time: toTime,
-                          drop_location_id : dropLocationId
+                          ...(dropLocationId && {
+                            drop_location_id: dropLocationId,
+                          }),
                         });
 
                         navigate(
