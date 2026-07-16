@@ -80,9 +80,7 @@ const SearchResult = () => {
                 <Card
                   key={warehouse.id}
                   className={`overflow-hidden rounded-2xl border-0 bg-white shadow-lg transition-all duration-300 ${
-                    warehouse.active
-                      ? "hover:-translate-y-2 hover:shadow-2xl"
-                      : "opacity-50 cursor-not-allowed"
+                     "hover:-translate-y-2 hover:shadow-2xl"
                   }`}
                 >
                   <div className="h-2 bg-gradient-to-r from-blue-500 via-violet-500 to-pink-500" />
@@ -108,7 +106,6 @@ const SearchResult = () => {
                     </div>
 
                     <Button
-                      disabled={!warehouse.active}
                       className="w-full bg-gradient-to-r from-blue-600 to-violet-600 text-white hover:from-blue-700 hover:to-violet-700"
                       onClick={() => {
                         const params = new URLSearchParams({
