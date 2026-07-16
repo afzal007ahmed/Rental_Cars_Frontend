@@ -215,8 +215,8 @@ const BookingUpdate = () => {
               ✓ Booking Management
             </Badge>
 
-            <h1 className="mt-4 text-5xl font-black bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
-              Update Booking
+            <h1 className="mt-4 pb-2 text-5xl font-black bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+              Booking
             </h1>
 
             <p className="mt-3 text-lg text-slate-300">
