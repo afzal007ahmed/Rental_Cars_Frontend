@@ -185,16 +185,16 @@ const BookingUpdate = () => {
 
   // Only in-progress bookings can be edited
   const isEditable = booking?.status === "inprogress";
-  
+
   // Safely access nested properties with fallbacks
   const vehicleData = booking?.vehicle || {};
   const userData = booking?.user || {};
   const pickupLocationData = booking?.pickupLocation || {};
   const dropLocationData = booking?.dropLocation || {};
-  
+
   const customerName = booking?.guest_name || userData?.name || "N/A";
   const customerEmail = booking?.guest_email || userData?.email || "N/A";
-  
+
   // Calculate rental duration
   const startDate = new Date(booking?.start_date);
   const endDate = new Date(booking?.to_date);
@@ -227,7 +227,10 @@ const BookingUpdate = () => {
               <div className="mt-6 flex items-center gap-2 rounded-xl bg-amber-500/20 border border-amber-400/50 px-4 py-3 text-amber-100">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <span className="text-sm font-medium">
-                  Read Only • Status: <span className="capitalize font-semibold">{booking?.status}</span>
+                  Read Only • Status:{" "}
+                  <span className="capitalize font-semibold">
+                    {booking?.status}
+                  </span>
                 </span>
               </div>
             )}
@@ -273,12 +276,18 @@ const BookingUpdate = () => {
                   </p>
 
                   <div className="mt-4 flex flex-wrap gap-3">
-                    <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200">
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-50 text-blue-700 border-blue-200"
+                    >
                       {vehicleData?.description}
                     </Badge>
-                    <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-                      <IndianRupee className="h-3 w-3 mr-1" />
-                      ₹{vehicleData?.price?.toLocaleString()} / day
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-50 text-green-700 border-green-200"
+                    >
+                      <IndianRupee className="h-3 w-3 mr-1" />₹
+                      {vehicleData?.price?.toLocaleString()} / day
                     </Badge>
                   </div>
                 </div>
@@ -303,11 +312,15 @@ const BookingUpdate = () => {
               <div className="mt-4 space-y-2 text-sm">
                 <div className="flex justify-between text-slate-600">
                   <span>Rate:</span>
-                  <span className="font-semibold">₹{vehicleData?.price?.toLocaleString()}/day</span>
+                  <span className="font-semibold">
+                    ₹{vehicleData?.price?.toLocaleString()}/day
+                  </span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Duration:</span>
-                  <span className="font-semibold">{days} {days === 1 ? 'day' : 'days'}</span>
+                  <span className="font-semibold">
+                    {days} {days === 1 ? "day" : "days"}
+                  </span>
                 </div>
                 <div className="border-t border-slate-200 pt-2 mt-2 flex justify-between font-bold text-slate-900">
                   <span>Total:</span>
@@ -340,7 +353,10 @@ const BookingUpdate = () => {
                   {pickupLocationData?.name && (
                     <div className="mt-4 space-y-2 text-sm">
                       <p className="text-slate-600">
-                        <span className="font-semibold">{pickupLocationData?.city}</span>, {pickupLocationData?.state}
+                        <span className="font-semibold">
+                          {pickupLocationData?.city}
+                        </span>
+                        , {pickupLocationData?.state}
                       </p>
                       <p className="text-xs text-slate-500">
                         📍 {pickupLocationData?.lat}, {pickupLocationData?.long}
@@ -372,7 +388,10 @@ const BookingUpdate = () => {
                   {dropLocationData?.name && (
                     <div className="mt-4 space-y-2 text-sm">
                       <p className="text-slate-600">
-                        <span className="font-semibold">{dropLocationData?.city}</span>, {dropLocationData?.state}
+                        <span className="font-semibold">
+                          {dropLocationData?.city}
+                        </span>
+                        , {dropLocationData?.state}
                       </p>
                       <p className="text-xs text-slate-500">
                         📍 {dropLocationData?.lat}, {dropLocationData?.long}
@@ -405,7 +424,9 @@ const BookingUpdate = () => {
 
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <Label className="text-sm font-semibold text-slate-700">Full Name</Label>
+                <Label className="text-sm font-semibold text-slate-700">
+                  Full Name
+                </Label>
                 <Input
                   className="mt-2 bg-slate-50 border-slate-200"
                   value={customerName}
@@ -415,7 +436,9 @@ const BookingUpdate = () => {
               </div>
 
               <div>
-                <Label className="text-sm font-semibold text-slate-700">Email Address</Label>
+                <Label className="text-sm font-semibold text-slate-700">
+                  Email Address
+                </Label>
                 <Input
                   className="mt-2 bg-slate-50 border-slate-200"
                   value={customerEmail}
@@ -427,10 +450,16 @@ const BookingUpdate = () => {
 
               {booking?.user && (
                 <div>
-                  <Label className="text-sm font-semibold text-slate-700">Account Status</Label>
+                  <Label className="text-sm font-semibold text-slate-700">
+                    Account Status
+                  </Label>
                   <Input
                     className="mt-2 bg-slate-50 border-slate-200"
-                    value={booking.user.guest ? "Guest Account" : "Registered Account"}
+                    value={
+                      booking.user.guest
+                        ? "Guest Account"
+                        : "Registered Account"
+                    }
                     disabled
                   />
                 </div>
@@ -438,7 +467,9 @@ const BookingUpdate = () => {
 
               {booking?.createdAt && (
                 <div>
-                  <Label className="text-sm font-semibold text-slate-700">Booking Date</Label>
+                  <Label className="text-sm font-semibold text-slate-700">
+                    Booking Date
+                  </Label>
                   <Input
                     className="mt-2 bg-slate-50 border-slate-200"
                     value={new Date(booking.createdAt).toLocaleDateString()}
@@ -478,7 +509,9 @@ const BookingUpdate = () => {
 
                 <div className="space-y-5">
                   <div>
-                    <Label className="text-sm font-semibold text-slate-700">Pickup Date</Label>
+                    <Label className="text-sm font-semibold text-slate-700">
+                      Pickup Date
+                    </Label>
                     <Input
                       className="mt-2 bg-white border-green-300"
                       type="date"
@@ -498,7 +531,9 @@ const BookingUpdate = () => {
                   </div>
 
                   <div>
-                    <Label className="text-sm font-semibold text-slate-700">Pickup Time</Label>
+                    <Label className="text-sm font-semibold text-slate-700">
+                      Pickup Time
+                    </Label>
                     <div className="mt-2 grid grid-cols-3 gap-3">
                       <Select
                         disabled={!isEditable}
@@ -568,7 +603,9 @@ const BookingUpdate = () => {
                   <div className="mt-4 flex items-center gap-3 rounded-xl bg-white border border-green-300 p-4 text-sm font-semibold text-slate-900">
                     <Clock className="h-5 w-5 text-green-600 flex-shrink-0" />
                     <span>
-                      {form.start_date} • {String(form.start_hour).padStart(2, "0")}:{form.start_minute} {form.start_period}
+                      {form.start_date} •{" "}
+                      {String(form.start_hour).padStart(2, "0")}:
+                      {form.start_minute} {form.start_period}
                     </span>
                   </div>
                 </div>
@@ -583,7 +620,9 @@ const BookingUpdate = () => {
 
                 <div className="space-y-5">
                   <div>
-                    <Label className="text-sm font-semibold text-slate-700">Return Date</Label>
+                    <Label className="text-sm font-semibold text-slate-700">
+                      Return Date
+                    </Label>
                     <Input
                       className="mt-2 bg-white border-red-300"
                       type="date"
@@ -603,7 +642,9 @@ const BookingUpdate = () => {
                   </div>
 
                   <div>
-                    <Label className="text-sm font-semibold text-slate-700">Return Time</Label>
+                    <Label className="text-sm font-semibold text-slate-700">
+                      Return Time
+                    </Label>
                     <div className="mt-2 grid grid-cols-3 gap-3">
                       <Select
                         disabled={!isEditable}
@@ -673,7 +714,8 @@ const BookingUpdate = () => {
                   <div className="mt-4 flex items-center gap-3 rounded-xl bg-white border border-red-300 p-4 text-sm font-semibold text-slate-900">
                     <Clock className="h-5 w-5 text-red-600 flex-shrink-0" />
                     <span>
-                      {form.to_date} • {String(form.end_hour).padStart(2, "0")}:{form.end_minute} {form.end_period}
+                      {form.to_date} • {String(form.end_hour).padStart(2, "0")}:
+                      {form.end_minute} {form.end_period}
                     </span>
                   </div>
                 </div>
@@ -694,19 +736,36 @@ const BookingUpdate = () => {
                     <div className="h-3 w-3 rounded-full bg-amber-500"></div>
                   )}
                   <span className="text-sm font-semibold uppercase tracking-wider text-slate-600">
-                    Status: <span className="capitalize text-slate-900">{booking?.status}</span>
+                    Status:{" "}
+                    <span className="capitalize text-slate-900">
+                      {booking?.status}
+                    </span>
                   </span>
                 </div>
 
                 <div className="text-sm text-slate-600 space-y-1">
-                  <p>Vehicle: <span className="font-semibold text-slate-900">{vehicleData?.brand} {vehicleData?.name}</span></p>
-                  <p>Rental Duration: <span className="font-semibold text-slate-900">{days} {days === 1 ? 'day' : 'days'}</span></p>
+                  <p>
+                    Vehicle:{" "}
+                    <span className="font-semibold text-slate-900">
+                      {vehicleData?.brand} {vehicleData?.name}
+                    </span>
+                  </p>
+                  <p>
+                    Rental Duration:{" "}
+                    <span className="font-semibold text-slate-900">
+                      {days} {days === 1 ? "day" : "days"}
+                    </span>
+                  </p>
                 </div>
 
                 {!isEditable && (
                   <div className="mt-4 p-4 rounded-lg bg-amber-50 border border-amber-200">
                     <p className="text-sm text-amber-900">
-                      <span className="font-semibold">Note:</span> This booking cannot be edited because its status is <span className="capitalize font-semibold">{booking?.status}</span>
+                      <span className="font-semibold">Note:</span> This booking
+                      cannot be edited because its status is{" "}
+                      <span className="capitalize font-semibold">
+                        {booking?.status}
+                      </span>
                     </p>
                   </div>
                 )}
