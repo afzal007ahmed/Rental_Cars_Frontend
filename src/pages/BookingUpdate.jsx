@@ -136,6 +136,11 @@ const BookingUpdate = () => {
   }, [id]);
 
   async function updateBooking() {
+    const currentDate = formatDate(new Date());
+    if (booking?.start_date && booking.start_date <= currentDate) {
+      toast.error("Cannot update booking that has already started or starts today.");
+      return;
+    }
     try {
       setSaving(true);
       const payload = {
@@ -183,8 +188,11 @@ const BookingUpdate = () => {
     );
   }
 
-  // Only in-progress bookings can be edited
-  const isEditable = booking?.status === "inprogress";
+  const currentDate = formatDate(new Date());
+  const isPastOrTodayStart = booking?.start_date && booking.start_date <= currentDate;
+
+  // Only in-progress bookings with a future start date can be edited
+  const isEditable = booking?.status === "inprogress" && !isPastOrTodayStart;
 
   // Safely access nested properties with fallbacks
   const vehicleData = booking?.vehicle || {};
@@ -227,10 +235,16 @@ const BookingUpdate = () => {
               <div className="mt-6 flex items-center gap-2 rounded-xl bg-amber-500/20 border border-amber-400/50 px-4 py-3 text-amber-100">
                 <AlertCircle className="h-5 w-5 flex-shrink-0" />
                 <span className="text-sm font-medium">
-                  Read Only • Status:{" "}
-                  <span className="capitalize font-semibold">
-                    {booking?.status}
-                  </span>
+                  {isPastOrTodayStart && booking?.status === "inprogress" ? (
+                    "Read Only • Booking has already started or starts today"
+                  ) : (
+                    <>
+                      Read Only • Status:{" "}
+                      <span className="capitalize font-semibold">
+                        {booking?.status}
+                      </span>
+                    </>
+                  )}
                 </span>
               </div>
             )}
@@ -761,11 +775,18 @@ const BookingUpdate = () => {
                 {!isEditable && (
                   <div className="mt-4 p-4 rounded-lg bg-amber-50 border border-amber-200">
                     <p className="text-sm text-amber-900">
-                      <span className="font-semibold">Note:</span> This booking
-                      cannot be edited because its status is{" "}
-                      <span className="capitalize font-semibold">
-                        {booking?.status}
-                      </span>
+                      <span className="font-semibold">Note:</span>{" "}
+                      {isPastOrTodayStart && booking?.status === "inprogress" ? (
+                        "This booking cannot be edited because it has already started or starts today."
+                      ) : (
+                        <>
+                          This booking cannot be edited because its status is{" "}
+                          <span className="capitalize font-semibold">
+                            {booking?.status}
+                          </span>
+                          .
+                        </>
+                      )}
                     </p>
                   </div>
                 )}
