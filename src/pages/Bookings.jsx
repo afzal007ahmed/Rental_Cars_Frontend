@@ -284,7 +284,7 @@ const Bookings = () => {
                           </p>
 
                           <p className="text-sm text-muted-foreground">
-                            {booking.dropLocation?.city},{" "}
+                            {booking.dropLocation?.city}{" "}
                             {booking.dropLocation?.state}
                           </p>
                         </div>
